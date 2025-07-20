@@ -62,7 +62,7 @@ const Login = () => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="student@example.com"
+                      placeholder="Your Email"
                       required
                       className="w-full"
                     />
@@ -74,7 +74,7 @@ const Login = () => {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Your password"
+                      placeholder="Your Password"
                       required
                       className="w-full"
                     />
@@ -110,7 +110,7 @@ const Login = () => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="teacher1@example.com"
+                      placeholder="Your Email"
                       required
                       className="w-full"
                     />
@@ -124,7 +124,7 @@ const Login = () => {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="password1"
+                      placeholder="Your Password"
                       required
                       className="w-full"
                     />
@@ -160,7 +160,7 @@ const Login = () => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="admin@example.com"
+                      placeholder="Your Email"
                       required
                       className="w-full"
                     />
@@ -172,7 +172,7 @@ const Login = () => {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="adminpass"
+                      placeholder="Your Password"
                       required
                       className="w-full"
                     />
