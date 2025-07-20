@@ -1,0 +1,12 @@
+
+services:
+  - type: web
+    name: education-dashboard
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist -l $PORT
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: PORT
+        value: 10000
