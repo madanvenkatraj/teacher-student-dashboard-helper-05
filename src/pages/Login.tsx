@@ -193,12 +193,6 @@ const Login = () => {
                     )}
                   </Button>
                 </form>
-                
-                <div className="mt-6 text-center text-sm text-gray-500">
-                  <p>Admin login details:</p>
-                  <p className="mt-1">Email: admin@example.com</p>
-                  <p>Password: adminpass</p>
-                </div>
               </TabsContent>
             </Tabs>
           </AnimatedCard>
