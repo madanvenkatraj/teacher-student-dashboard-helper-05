@@ -28,32 +28,36 @@ const StudentDashboard = () => {
   console.log('Student created by teacher:', teacher?.name);
   console.log('Filtered assessments count:', studentAssessments.length);
   
-  // Filter assessments to only show those where start time has passed
+  // Categorize assessments based on current time
   const now = new Date();
-  const visibleAssessments = studentAssessments.filter(assessment => {
-    const startDateTime = new Date(`${assessment.startDate}T${assessment.startTime || '00:00'}`);
-    return !isAfter(startDateTime, now);
-  });
   
-  // Get upcoming (not yet visible) assessments
+  // Get upcoming assessments (start time is in the future)
   const upcomingAssessments = studentAssessments.filter(assessment => {
     const startDateTime = new Date(`${assessment.startDate}T${assessment.startTime || '00:00'}`);
     return isAfter(startDateTime, now);
   });
   
-  // Sort visible assessments by due date (upcoming first, then overdue)
-  const sortedAssessments = [...visibleAssessments].sort((a, b) => {
-    const dateA = new Date(a.dueDate);
-    const dateB = new Date(b.dueDate);
-    const nowDate = new Date();
+  // Get active assessments (start time has passed)
+  const activeAssessments = studentAssessments.filter(assessment => {
+    const startDateTime = new Date(`${assessment.startDate}T${assessment.startTime || '00:00'}`);
+    return !isAfter(startDateTime, now);
+  });
+  
+  // Sort active assessments: ongoing first, then overdue
+  const sortedAssessments = [...activeAssessments].sort((a, b) => {
+    const dueDateTimeA = new Date(`${a.dueDate}T${a.dueTime || '23:59'}`);
+    const dueDateTimeB = new Date(`${b.dueDate}T${b.dueTime || '23:59'}`);
     
-    // If both are overdue or both are not overdue, sort by date
-    if ((isPast(dateA) === isPast(dateB))) {
-      return dateA.getTime() - dateB.getTime();
+    const isOverdueA = isPast(dueDateTimeA);
+    const isOverdueB = isPast(dueDateTimeB);
+    
+    // If both are overdue or both are ongoing, sort by due date
+    if (isOverdueA === isOverdueB) {
+      return dueDateTimeA.getTime() - dueDateTimeB.getTime();
     }
     
-    // Put non-overdue (upcoming) assessments first
-    return isPast(dateA) ? 1 : -1;
+    // Put ongoing assessments first
+    return isOverdueA ? 1 : -1;
   });
 
   if (!currentUser) {

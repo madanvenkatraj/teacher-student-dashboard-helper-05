@@ -27,7 +27,13 @@ const ActiveAssessments = ({
       <div className="space-y-4">
         {sortedAssessments.map(assessment => {
           const submission = getSubmission(assessment.id, currentUser.id);
-          const isOverdue = isPast(new Date(assessment.dueDate));
+          const now = new Date();
+          const dueDateTimeObj = new Date(`${assessment.dueDate}T${assessment.dueTime || '23:59'}`);
+          const isOverdue = isPast(dueDateTimeObj);
+          const isOngoing = !isOverdue;
+          
+          // Results are only visible after due date/time has passed
+          const canViewResults = isPast(dueDateTimeObj);
           
           return (
             <div 
@@ -47,17 +53,29 @@ const ActiveAssessments = ({
                   </div>
                   
                   {submission?.isCompleted ? (
-                    <Badge className="bg-green-100 text-green-800">
-                      <CheckCircle className="h-3 w-3 mr-1" /> Completed
-                    </Badge>
+                    canViewResults && submission?.marksAwarded !== undefined ? (
+                      <Badge className="bg-green-100 text-green-800">
+                        <CheckCircle className="h-3 w-3 mr-1" /> Completed
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-gray-100 text-gray-600">
+                        <Clock className="h-3 w-3 mr-1" /> Submitted
+                      </Badge>
+                    )
                   ) : isOverdue ? (
                     <Badge variant="destructive">
                       <XCircle className="h-3 w-3 mr-1" /> Overdue
                     </Badge>
-                  ) : submission ? (
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-800">
-                      <Clock className="h-3 w-3 mr-1" /> In Progress
-                    </Badge>
+                  ) : isOngoing ? (
+                    submission ? (
+                      <Badge variant="outline" className="bg-yellow-50 text-yellow-800">
+                        <Clock className="h-3 w-3 mr-1" /> In Progress
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-green-100 text-green-800">
+                        <Clock className="h-3 w-3 mr-1" /> Ongoing
+                      </Badge>
+                    )
                   ) : (
                     <Badge variant="outline">
                       <Clock className="h-3 w-3 mr-1" /> Not Started
@@ -68,7 +86,7 @@ const ActiveAssessments = ({
                 <div className="flex items-center text-sm text-gray-500 mb-2 mt-4">
                   <Calendar className="h-4 w-4 mr-2" />
                   <span className={isOverdue ? 'text-red-500' : ''}>
-                    Due: {format(new Date(assessment.dueDate), 'PPP')}
+                    Due: {format(dueDateTimeObj, 'PPP p')}
                   </span>
                 </div>
                 
@@ -77,7 +95,7 @@ const ActiveAssessments = ({
                   <span>{assessment.questions.length} Questions</span>
                 </div>
                 
-                {submission?.marksAwarded !== undefined && (
+                {submission?.marksAwarded !== undefined && canViewResults && (
                   <div className="mb-4 p-3 bg-blue-50 rounded-md">
                     <p className="text-sm font-medium text-blue-800">Your Mark</p>
                     <p className="text-xl font-bold text-blue-900">
@@ -90,11 +108,11 @@ const ActiveAssessments = ({
                   asChild 
                   variant={submission?.isCompleted || isOverdue ? "outline" : "default"}
                   className="w-full"
-                  disabled={submission?.isCompleted && submission?.marksAwarded === undefined}
+                  disabled={submission?.isCompleted && !canViewResults}
                 >
                   <Link to={`/student-assessment/${assessment.id}`}>
                     {submission?.isCompleted 
-                      ? (submission?.marksAwarded !== undefined ? 'View Results' : 'Waiting for Marking') 
+                      ? (canViewResults && submission?.marksAwarded !== undefined ? 'View Results' : 'Assessment Submitted') 
                       : (isOverdue ? 'View Assessment (Overdue)' : 'Start Assessment')}
                   </Link>
                 </Button>
