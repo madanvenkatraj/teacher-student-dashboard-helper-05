@@ -187,8 +187,8 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSubmit, onCancel, ini
     const startDateTime = new Date(`${format(startDate, 'yyyy-MM-dd')}T${startTime}`);
     const dueDateTime = new Date(`${format(dueDate, 'yyyy-MM-dd')}T${dueTime}`);
     
-    if (dueDateTime <= startDateTime) {
-      toast.error('Due date must be after start date');
+    if (dueDateTime < startDateTime) {
+      toast.error('Due date and time must be after start date and time');
       return;
     }
     
