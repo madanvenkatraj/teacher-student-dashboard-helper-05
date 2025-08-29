@@ -527,11 +527,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const student = students.find(s => s.id === studentId);
     if (!student) return [];
     
-    const teacherAssessments = assessments.filter(assessment => assessment.createdBy === student.createdBy);
+    // Get all unique assessments that the student should see
+    // This includes assessments from their teacher AND super teacher assessments
+    const relevantAssessments = assessments.filter(assessment => 
+      assessment.createdBy === student.createdBy || assessment.createdBySuperTeacher === true
+    );
     
-    const superTeacherAssessments = getSuperTeacherAssessments();
-    
-    return [...teacherAssessments, ...superTeacherAssessments];
+    return relevantAssessments;
   };
 
   const submitAssessment = async (

@@ -14,15 +14,8 @@ const StudentDashboard = () => {
   // Find the teacher that created this student
   const teacher = teachers.find(t => t.id === currentUser?.createdBy);
   
-  // Get assessments for this student - only from their specific teacher
-  // This ensures no duplicate or unrelated assessments appear
-  const studentAssessments = currentUser && teacher
-    ? getStudentAssessments(currentUser.id).filter(assessment => {
-        // Only show assessments created by the student's teacher
-        // or Super Teacher assessments that are globally visible
-        return assessment.createdBy === teacher.id || assessment.createdBySuperTeacher;
-      })
-    : [];
+  // Get assessments for this student - filtering is handled by getStudentAssessments
+  const studentAssessments = currentUser ? getStudentAssessments(currentUser.id) : [];
 
   console.log('Student assessments for', currentUser?.name, ':', studentAssessments);
   console.log('Student created by teacher:', teacher?.name);
